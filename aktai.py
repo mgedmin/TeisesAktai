@@ -91,15 +91,16 @@ def main():
     parser.add_argument('filename', nargs='?', default='DI.xlsx')
     args = parser.parse_args()
 
-    seen = set()
+    seen = {}
     wb = openpyxl.load_workbook(args.filename)
     for ws in wb.worksheets:
         name = ws.title
         codes = {
-            aktas.identifikacinis_kodas
+            aktas.identifikacinis_kodas: aktas
             for aktas in parse_worksheet(ws)
         }
-        print(f"{name}: aktų - {len(codes)}, naujų - {len(codes - seen)}")
+        new = set(codes) - set(seen)
+        print(f"{name}: aktų - {len(codes)}, naujų - {len(new)}")
         seen.update(codes)
 
     print(f"Viso: {len(seen)}")
