@@ -123,11 +123,13 @@ def main():
             n,
             aktas.rūšis,
             aktas.pavadinimas,
-            aktas.priėmė,
+            aktas.priėmė.replace('Priėmė ', '').replace('Enacted by ', ''),
             aktas.įstaigos_suteiktas_nr,
             aktas.priėmimo_data,
             aktas.įsigaliojimo_data,
-            aktas.užregistruota,
+            aktas.užregistruota.replace('Užregistruota ', '').replace(
+                'Identifikacinis kodas ', ''
+            ),
         ])
         ws.cell(row=n, column=3).hyperlink = aktas.nuoroda
     filename = 'DI aktai be dublikatų.xlsx'
