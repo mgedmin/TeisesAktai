@@ -131,7 +131,8 @@ def main():
                 'Identifikacinis kodas ', ''
             ),
         ])
-        ws.cell(row=n, column=3).hyperlink = aktas.nuoroda
+        ws.cell(row=n + 1, column=3).hyperlink = aktas.nuoroda
+        ws.cell(row=n + 1, column=3).style = 'Hyperlink'
     filename = 'DI aktai be dublikatų.xlsx'
     wb.save(filename)
     print(f'Wrote {filename}')
