@@ -25,7 +25,7 @@ class Aktas:
     rūšis: str
     pavadinimas: str
     nuoroda: str
-    įstaigos_suteiktas_nr: str
+    įstaigos_suteiktas_nr: str | int | datetime.datetime
     priėmimo_data: datetime.datetime
     įsigaliojimo_data: datetime.datetime
     # galiojimas/pakeitimai/projektai neįdomu
@@ -68,7 +68,7 @@ def parse_worksheet(
                 rūšis=row[1].value,
                 pavadinimas=row[2].value,
                 nuoroda=row[2].hyperlink.target,
-                įstaigos_suteiktas_nr=str(row[3].value),
+                įstaigos_suteiktas_nr=row[3].value,
                 priėmimo_data=row[4].value,
                 įsigaliojimo_data=row[5].value,
             )
@@ -105,6 +105,34 @@ def main():
 
     print(f"Viso: {len(seen)}")
     print(*sorted(seen), sep=', ')
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.append([
+        'Eil. Nr.',
+        'Rūšis',
+        'Pavadinimas',
+        'Priėmė',
+        'Įstaigos suteiktas Nr.',
+        'Priėmimo data',
+        'Įsigaliojimo data',
+        'Užregistruota, Identifikacinis kodas',
+    ])
+    for n, aktas in enumerate(seen.values(), 1):
+        ws.append([
+            n,
+            aktas.rūšis,
+            aktas.pavadinimas,
+            aktas.priėmė,
+            aktas.įstaigos_suteiktas_nr,
+            aktas.priėmimo_data,
+            aktas.įsigaliojimo_data,
+            aktas.užregistruota,
+        ])
+        ws.cell(row=n, column=3).hyperlink = aktas.nuoroda
+    filename = 'DI aktai be dublikatų.xlsx'
+    wb.save(filename)
+    print(f'Wrote {filename}')
 
 
 if __name__ == '__main__':
